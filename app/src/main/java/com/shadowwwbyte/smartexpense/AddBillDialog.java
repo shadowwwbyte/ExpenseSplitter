@@ -53,8 +53,9 @@ public class AddBillDialog {
             row.setOrientation(LinearLayout.HORIZONTAL);
             TextView lbl = new TextView(ctx); lbl.setText(people.get(i).getName() + ": ");
             lbl.setPadding(0, 8, 8, 0);
-            EditText et = new EditText(ctx); et.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
-            et.setHint("0.00"); et.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+            // 0x2003 = numberDecimal|text, same as Total Amount field — gives numpad with + key
+            EditText et = new EditText(ctx); et.setRawInputType(0x2003);
+            et.setHint("e.g. 50+30"); et.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
             if (existing != null && existing.hasIndividualAmounts()) {
                 Double amt = existing.getIndividualAmounts().get(people.get(i).getId());
                 if (amt != null) et.setText(String.format("%.2f", amt));
@@ -92,7 +93,7 @@ public class AddBillDialog {
                     double[] amounts = new double[people.size()];
                     for (int i = 0; i < indivEdits.length; i++) {
                         String s = indivEdits[i].getText().toString().trim();
-                        amounts[i] = s.isEmpty() ? 0 : Double.parseDouble(s);
+                        try { amounts[i] = s.isEmpty() ? 0 : eval(s); } catch (Exception e) { Toast.makeText(ctx, "Invalid amount for " + people.get(i).getName(), Toast.LENGTH_SHORT).show(); return; }
                         sum += amounts[i];
                     }
                     if (existing == null) {
