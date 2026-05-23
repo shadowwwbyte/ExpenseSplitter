@@ -55,6 +55,7 @@ public class ExpenseManager {
         Map<Integer, Person> idToPerson = people.stream().collect(Collectors.toMap(Person::getId, p -> p));
         List<Map.Entry<Integer, Double>> creditors = new ArrayList<>(), debtors = new ArrayList<>();
         for (Map.Entry<Integer, Double> e : bal.entrySet()) {
+            if (!idToPerson.containsKey(e.getKey())) continue; // skip orphaned IDs
             if (e.getValue() > 0.009) creditors.add(new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue()));
             else if (e.getValue() < -0.009) debtors.add(new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue()));
         }
@@ -67,7 +68,10 @@ public class ExpenseManager {
             double owe = -d.getValue(), claim = c.getValue(); double pay = Math.min(owe, claim);
             pay = Math.round(pay * 100.0) / 100.0;
             if (pay > 0) {
-                tx.add(idToPerson.get(d.getKey()).getName() + " pays " + idToPerson.get(c.getKey()).getName() + " " + String.format("%.2f", pay));
+                Person debtor = idToPerson.get(d.getKey());
+                Person creditor = idToPerson.get(c.getKey());
+                if (debtor == null || creditor == null) { i++; j++; continue; }
+                tx.add(debtor.getName() + " pays " + creditor.getName() + " " + String.format("%.2f", pay));
                 d.setValue(d.getValue() + pay); c.setValue(c.getValue() - pay);
             }
             if (Math.abs(d.getValue()) < 0.01) i++;
