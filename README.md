@@ -18,3 +18,10 @@ gradle assembleDebug
 
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
+
+### Screenshots
+
+| | | |
+|---|---|---|
+| ![](./screenshots/1.jpg) | ![](./screenshots/2.jpg) | ![](./screenshots/3.jpg) |
+| ![](./screenshots/4.jpg) | ![](./screenshots/5.jpg) | ![](./screenshots/6.jpg) |
