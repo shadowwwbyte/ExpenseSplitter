@@ -51,11 +51,17 @@ public class AddBillDialog {
         for (int i = 0; i < people.size(); i++) {
             LinearLayout row = new LinearLayout(ctx);
             row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setPadding(0, 4, 0, 4);
             TextView lbl = new TextView(ctx); lbl.setText(people.get(i).getName() + ": ");
             lbl.setPadding(0, 8, 8, 0);
+            lbl.setTextColor(0xFFEBDBB2); // gruvbox_fg
             // 0x2003 = numberDecimal|text, same as Total Amount field — gives numpad with + key
             EditText et = new EditText(ctx); et.setRawInputType(0x2003);
-            et.setHint("e.g. 50+30"); et.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+            et.setHint("e.g. 50+30");
+            et.setHintTextColor(0xFF665C54); // gruvbox_bg3
+            et.setTextColor(0xFFEBDBB2);     // gruvbox_fg
+            et.getBackground().setTint(0xFFD79921); // gruvbox_yellow underline
+            et.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
             if (existing != null && existing.hasIndividualAmounts()) {
                 Double amt = existing.getIndividualAmounts().get(people.get(i).getId());
                 if (amt != null) et.setText(String.format("%.2f", amt));
