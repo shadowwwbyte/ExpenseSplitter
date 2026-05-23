@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gruvbox_bg"
+    android:padding="12dp">
+
+    <TextView
+        android:text="People"
+        android:textColor="@color/gruvbox_yellow"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+        <Button
+            android:id="@+id/btn_add_person"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:text="+ Add"
+            android:textColor="@color/gruvbox_bg"
+            android:background="@drawable/btn_accent_bg"
+            android:textSize="13sp"
+            android:layout_marginEnd="6dp"/>
+        <Button
+            android:id="@+id/btn_edit_person"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:text="Edit"
+            android:textColor="@color/gruvbox_fg"
+            android:background="@drawable/btn_bg"
+            android:textSize="13sp"
+            android:layout_marginEnd="6dp"/>
+        <Button
+            android:id="@+id/btn_remove_person"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:text="Remove"
+            android:textColor="@color/gruvbox_bright_red"
+            android:background="@drawable/btn_bg"
+            android:textSize="13sp"/>
+    </LinearLayout>
+
+    <TextView
+        android:text="Long-press to select, tap Edit or Remove"
+        android:textColor="@color/gruvbox_bg3"
+        android:textSize="11sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="6dp"/>
+
+    <ListView
+        android:id="@+id/people_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:choiceMode="singleChoice"
+        android:divider="@drawable/divider"
+        android:dividerHeight="1dp"
+        android:background="@drawable/card_bg"
+        android:padding="4dp"/>
+</LinearLayout>

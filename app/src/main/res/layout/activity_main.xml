@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gruvbox_bg">
+
+    <!-- Toolbar -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/gruvbox_bg1"
+        android:gravity="center_vertical"
+        android:padding="8dp">
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="36dp"
+            android:text="&#8592;"
+            android:textColor="@color/gruvbox_fg"
+            android:background="@drawable/btn_bg"
+            android:textSize="18sp"
+            android:padding="0dp"
+            android:layout_marginEnd="8dp"/>
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Expense Splitter"
+            android:textColor="@color/gruvbox_bright_yellow"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:maxLines="1"/>
+    </LinearLayout>
+
+    <!-- Content -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <!-- Bottom Nav -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/gruvbox_bg1"
+        android:gravity="center"
+        android:padding="6dp">
+        <Button
+            android:id="@+id/btn_nav_people"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:text="People"
+            android:textColor="@color/gruvbox_fg"
+            android:background="@drawable/btn_bg"
+            android:textSize="12sp"
+            android:layout_marginEnd="4dp"/>
+        <Button
+            android:id="@+id/btn_nav_bills"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:text="Bills"
+            android:textColor="@color/gruvbox_fg"
+            android:background="@drawable/btn_bg"
+            android:textSize="12sp"
+            android:layout_marginEnd="4dp"/>
+        <Button
+            android:id="@+id/btn_nav_dashboard"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:text="Dashboard"
+            android:textColor="@color/gruvbox_bg"
+            android:background="@drawable/btn_accent_bg"
+            android:textSize="12sp"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,22 @@
+<resources>
+    <style name="Theme.Material3App" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/gruvbox_bg</item>
+        <item name="colorPrimary">@color/gruvbox_yellow</item>
+        <item name="colorPrimaryDark">@color/gruvbox_bg1</item>
+        <item name="colorAccent">@color/gruvbox_orange</item>
+        <item name="android:textColorPrimary">@color/gruvbox_fg</item>
+        <item name="android:textColorSecondary">@color/gruvbox_fg2</item>
+        <item name="android:colorBackground">@color/gruvbox_bg</item>
+    </style>
+    <style name="GruvboxButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/gruvbox_fg</item>
+        <item name="strokeColor">@color/gruvbox_bg3</item>
+        <item name="android:background">@drawable/btn_bg</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+    </style>
+    <style name="GruvboxButtonAccent" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/gruvbox_bg</item>
+        <item name="android:background">@drawable/btn_accent_bg</item>
+    </style>
+</resources>

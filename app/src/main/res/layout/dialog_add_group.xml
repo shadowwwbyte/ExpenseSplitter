@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp"
+    android:background="@color/gruvbox_bg1">
+    <TextView
+        android:text="Name"
+        android:textColor="@color/gruvbox_fg2"
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:id="@+id/edit_group_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="e.g. Trip to Goa"
+        android:textColor="@color/gruvbox_fg"
+        android:textColorHint="@color/gruvbox_bg3"
+        android:backgroundTint="@color/gruvbox_yellow"/>
+    <TextView
+        android:text="Description (optional)"
+        android:textColor="@color/gruvbox_fg2"
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"/>
+    <EditText
+        android:id="@+id/edit_group_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Short description"
+        android:textColor="@color/gruvbox_fg"
+        android:textColorHint="@color/gruvbox_bg3"
+        android:backgroundTint="@color/gruvbox_yellow"/>
+</LinearLayout>

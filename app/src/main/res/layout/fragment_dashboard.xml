@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gruvbox_bg">
+
+    <!-- Export buttons -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:gravity="end">
+        <Button
+            android:id="@+id/btn_export_png"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Export PNG"
+            android:textColor="@color/gruvbox_fg"
+            android:background="@drawable/btn_bg"
+            android:textSize="12sp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:layout_marginEnd="8dp"/>
+        <Button
+            android:id="@+id/btn_export_pdf"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Export PDF"
+            android:textColor="@color/gruvbox_bg"
+            android:background="@drawable/btn_accent_bg"
+            android:textSize="12sp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/dash_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="14dp"/>
+    </ScrollView>
+</LinearLayout>

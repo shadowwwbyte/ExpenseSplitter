@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/gruvbox_bg1">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="Title"
+            android:textColor="@color/gruvbox_fg2"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/edit_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g. Dinner"
+            android:textColor="@color/gruvbox_fg"
+            android:textColorHint="@color/gruvbox_bg3"
+            android:backgroundTint="@color/gruvbox_yellow"/>
+        <TextView
+            android:text="Description"
+            android:textColor="@color/gruvbox_fg2"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+        <EditText
+            android:id="@+id/edit_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Short description"
+            android:textColor="@color/gruvbox_fg"
+            android:textColorHint="@color/gruvbox_bg3"
+            android:backgroundTint="@color/gruvbox_yellow"/>
+        <TextView
+            android:text="Payer"
+            android:textColor="@color/gruvbox_fg2"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+        <Spinner
+            android:id="@+id/spinner_payer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="Split Mode"
+            android:textColor="@color/gruvbox_fg2"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"/>
+        <Spinner
+            android:id="@+id/spinner_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="Total Amount"
+            android:textColor="@color/gruvbox_fg2"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+        <EditText
+            android:id="@+id/edit_total"
+            android:inputType="numberDecimal|text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g. 100 or 50+50"
+            android:textColor="@color/gruvbox_fg"
+            android:textColorHint="@color/gruvbox_bg3"
+            android:backgroundTint="@color/gruvbox_yellow"/>
+        <LinearLayout
+            android:id="@+id/indiv_container"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+</ScrollView>
