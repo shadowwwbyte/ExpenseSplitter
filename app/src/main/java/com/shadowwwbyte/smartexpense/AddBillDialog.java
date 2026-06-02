@@ -94,34 +94,37 @@ public class AddBillDialog {
                 if (payer == null) { Toast.makeText(ctx, "Select a payer", Toast.LENGTH_SHORT).show(); return; }
                 int mode = modeSpinner.getSelectedItemPosition();
                 if (mode == 1) {
-                    // Individual
+                    // Individual amounts
                     double sum = 0;
                     double[] amounts = new double[people.size()];
                     for (int i = 0; i < indivEdits.length; i++) {
                         String s = indivEdits[i].getText().toString().trim();
-                        try { amounts[i] = s.isEmpty() ? 0 : eval(s); } catch (Exception e) { Toast.makeText(ctx, "Invalid amount for " + people.get(i).getName(), Toast.LENGTH_SHORT).show(); return; }
+                        try { amounts[i] = s.isEmpty() ? 0 : eval(s); }
+                        catch (Exception e) { Toast.makeText(ctx, "Invalid amount for " + people.get(i).getName(), Toast.LENGTH_SHORT).show(); return; }
                         sum += amounts[i];
                     }
                     if (existing == null) {
-                        Bill b = manager.addBill(title, desc, sum, payer.getId());
+                        // addBillNoSave so we can set amounts before the first save
+                        Bill b = manager.addBillNoSave(title, desc, sum, payer.getId());
                         for (int i = 0; i < people.size(); i++) if (amounts[i] > 0) b.setIndividualAmount(people.get(i).getId(), amounts[i]);
                     } else {
                         existing.clearIndividualAmounts();
-                        manager.updateBill(existing, title, desc, sum, payer.getId());
+                        manager.updateBillNoSave(existing, title, desc, sum, payer.getId());
                         for (int i = 0; i < people.size(); i++) if (amounts[i] > 0) existing.setIndividualAmount(people.get(i).getId(), amounts[i]);
-                        manager.saveToFile(ctx);
                     }
                 } else {
+                    // Even split
                     String ts = totalEdit.getText().toString().trim();
                     double total = 0;
                     try { total = eval(ts); } catch (Exception e) { Toast.makeText(ctx, "Invalid total", Toast.LENGTH_SHORT).show(); return; }
                     if (existing == null) {
-                        manager.addBill(title, desc, total, payer.getId());
+                        manager.addBillNoSave(title, desc, total, payer.getId());
                     } else {
                         existing.clearIndividualAmounts();
-                        manager.updateBill(existing, title, desc, total, payer.getId());
+                        manager.updateBillNoSave(existing, title, desc, total, payer.getId());
                     }
                 }
+                // Single save after everything is fully set
                 adapter.notifyDataSetChanged();
                 manager.saveToFile(ctx);
             })

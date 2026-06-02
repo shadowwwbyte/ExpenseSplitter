@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         p.setOnClickListener(v -> fm.beginTransaction().replace(R.id.fragment_container, peopleFrag).commit());
         b.setOnClickListener(v -> fm.beginTransaction().replace(R.id.fragment_container, billsFrag).commit());
-        d.setOnClickListener(v -> { dashFrag.refresh(); fm.beginTransaction().replace(R.id.fragment_container, dashFrag).commit(); });
+        d.setOnClickListener(v -> fm.beginTransaction().replace(R.id.fragment_container, dashFrag).commit());
 
         // Back arrow
         Button back = findViewById(R.id.btn_back);

@@ -27,11 +27,19 @@ public class ExpenseManager {
     public Bill addBill(String title, String desc, double total, int payerId) {
         Bill b = new Bill(title, desc, total, payerId); bills.add(b); saveToFileCached(null); return b;
     }
+    // Add bill without triggering auto-save — caller must call saveToFile() after setting all amounts
+    public Bill addBillNoSave(String title, String desc, double total, int payerId) {
+        Bill b = new Bill(title, desc, total, payerId); bills.add(b); return b;
+    }
     // Internal: restore a bill without triggering save (used by loadFromFile only)
     private Bill restoreBill(String title, String desc, double total, int payerId) {
         Bill b = new Bill(title, desc, total, payerId); bills.add(b); return b;
     }
     public void removeBill(Bill b) { bills.remove(b); saveToFileCached(null); }
+    // Update bill fields without triggering auto-save — caller must call saveToFile() after
+    public void updateBillNoSave(Bill b, String title, String desc, double total, int payerId) {
+        b.setTitle(title); b.setDescription(desc); b.setTotal(total); b.setPayerId(payerId);
+    }
     public void updateBill(Bill b, String title, String desc, double total, int payerId) {
         b.setTitle(title); b.setDescription(desc); b.setTotal(total); b.setPayerId(payerId);
         saveToFileCached(null);

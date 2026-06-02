@@ -48,7 +48,7 @@ public class DashboardFragment extends Fragment {
     }
 
     public void refresh() {
-        if (dashContent == null) return;
+        if (dashContent == null || getContext() == null) return;
         dashContent.removeAllViews();
 
         addSection("People (" + manager.getPeople().size() + ")", YELLOW);
