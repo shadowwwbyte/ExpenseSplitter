@@ -58,10 +58,6 @@ public class ExpenseManager {
             int n = people.size();
             if (n == 0) continue;
 
-        for (Bill b : bills) {
-            int n = people.size();
-            if (n == 0) continue;
-
             // Credit the payer(s)
             if (b.isMultiPayer()) {
                 for (Map.Entry<Integer, Double> e : b.getMultiPayers().entrySet()) {
