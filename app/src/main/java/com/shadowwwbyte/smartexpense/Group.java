@@ -2,7 +2,7 @@ package com.shadowwwbyte.smartexpense;
 
 public class Group {
     private static int COUNTER = 0;
-    private final int id;
+    private int id;
     private String name;
     private String description;
     private long createdAt;
@@ -12,6 +12,14 @@ public class Group {
         this.name = name;
         this.description = description == null ? "" : description;
         this.createdAt = System.currentTimeMillis();
+    }
+
+    // Restore with original saved ID — does NOT increment COUNTER
+    public void forceId(int savedId) { this.id = savedId; }
+
+    // After loading all saved groups, call this so new groups get IDs above all saved ones
+    public static void advanceCounter(int maxSavedId) {
+        if (maxSavedId > COUNTER) COUNTER = maxSavedId;
     }
 
     public int getId() { return id; }

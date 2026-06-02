@@ -25,16 +25,19 @@ public class GroupManager {
     }
 
     public void removeGroup(Context ctx, Group g) {
-        // Delete persisted data file
         if (ctx != null) {
             File f = new File(ctx.getFilesDir(), "group_" + g.getId() + ".json");
             if (f.exists()) f.delete();
+            // also clean up any .tmp left over
+            File tmp = new File(ctx.getFilesDir(), "group_" + g.getId() + ".json.tmp");
+            if (tmp.exists()) tmp.delete();
         }
         groups.remove(g);
     }
 
     public void updateGroup(Group g, String name, String description) {
-        g.setName(name); g.setDescription(description);
+        g.setName(name);
+        g.setDescription(description == null ? "" : description);
     }
 
     public Group getGroupById(int id) {
@@ -54,8 +57,12 @@ public class GroupManager {
                 jo.put("createdAt", g.getCreatedAt());
                 arr.put(jo);
             }
-            File f = new File(ctx.getFilesDir(), "groups.json");
-            try (FileWriter fw = new FileWriter(f)) { fw.write(arr.toString(2)); }
+            // Atomic write: write to .tmp then rename
+            File dir = ctx.getFilesDir();
+            File tmp = new File(dir, "groups.json.tmp");
+            File fin = new File(dir, "groups.json");
+            try (FileWriter fw = new FileWriter(tmp)) { fw.write(arr.toString(2)); }
+            tmp.renameTo(fin);
         } catch (Exception ex) { ex.printStackTrace(); }
     }
 
@@ -70,12 +77,18 @@ public class GroupManager {
             }
             JSONArray arr = new JSONArray(sb.toString());
             groups.clear();
+            int maxId = 0;
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject jo = arr.getJSONObject(i);
+                int savedId = jo.optInt("id", -1);
+                if (savedId <= 0) continue; // skip corrupt entries
                 Group g = new Group(jo.optString("name", "Group"), jo.optString("description", ""));
+                g.forceId(savedId);          // restore original ID
                 g.setCreatedAt(jo.optLong("createdAt", System.currentTimeMillis()));
                 groups.add(g);
+                if (savedId > maxId) maxId = savedId;
             }
+            Group.advanceCounter(maxId);     // ensure new groups get fresh IDs
         } catch (Exception ex) { ex.printStackTrace(); }
     }
 }
