@@ -11,7 +11,8 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file(System.getenv("KEYSTORE_PATH") ?: "expense-splitter.jks")
+            def keystorePath = System.getenv("KEYSTORE_PATH")
+            storeFile keystorePath ? file(keystorePath) : null
             storePassword System.getenv("KEYSTORE_PASSWORD") ?: ""
             keyAlias System.getenv("KEY_ALIAS") ?: ""
             keyPassword System.getenv("KEY_PASSWORD") ?: ""
