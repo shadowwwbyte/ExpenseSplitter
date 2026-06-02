@@ -58,30 +58,38 @@ public class ExpenseManager {
             int n = people.size();
             if (n == 0) continue;
 
-            if (b.hasIndividualAmounts()) {
-                // Payer gets credited the full amount
+        for (Bill b : bills) {
+            int n = people.size();
+            if (n == 0) continue;
+
+            // Credit the payer(s)
+            if (b.isMultiPayer()) {
+                for (Map.Entry<Integer, Double> e : b.getMultiPayers().entrySet()) {
+                    if (bal.containsKey(e.getKey()))
+                        bal.put(e.getKey(), bal.get(e.getKey()) + e.getValue());
+                }
+            } else {
                 if (bal.containsKey(b.getPayerId()))
                     bal.put(b.getPayerId(), bal.get(b.getPayerId()) + b.getTotal());
-                // Each person is debited their individual share
+            }
+
+            // Debit everyone their share
+            if (b.hasIndividualAmounts()) {
                 for (Map.Entry<Integer, Double> e : b.getIndividualAmounts().entrySet()) {
                     if (bal.containsKey(e.getKey()))
                         bal.put(e.getKey(), bal.get(e.getKey()) - e.getValue());
                 }
             } else {
-                // Even split: distribute remainder to avoid float drift
+                // Even split
                 double total = b.getTotal();
                 double baseShare = Math.floor((total / n) * 100.0) / 100.0;
                 double remainder = Math.round((total - baseShare * n) * 100.0) / 100.0;
                 int remCents = (int) Math.round(remainder * 100);
-
-                List<Person> pList = people;
-                for (int i = 0; i < pList.size(); i++) {
+                for (int i = 0; i < people.size(); i++) {
                     double share = baseShare + (i < remCents ? 0.01 : 0.00);
-                    int pid = pList.get(i).getId();
+                    int pid = people.get(i).getId();
                     bal.put(pid, bal.getOrDefault(pid, 0.0) - share);
                 }
-                if (bal.containsKey(b.getPayerId()))
-                    bal.put(b.getPayerId(), bal.get(b.getPayerId()) + total);
             }
         }
 
@@ -177,6 +185,10 @@ public class ExpenseManager {
                 for (Map.Entry<Integer, Double> e : b.getIndividualAmounts().entrySet())
                     ind.put(Integer.toString(e.getKey()), e.getValue());
                 bo.put("individual", ind);
+                JSONObject mp = new JSONObject();
+                for (Map.Entry<Integer, Double> e : b.getMultiPayers().entrySet())
+                    mp.put(Integer.toString(e.getKey()), e.getValue());
+                bo.put("multiPayers", mp);
                 ba.put(bo);
             }
             root.put("bills", ba);
@@ -233,6 +245,15 @@ public class ExpenseManager {
                         while (keys.hasNext()) {
                             String k = keys.next();
                             try { b.setIndividualAmount(Integer.parseInt(k), ind.optDouble(k, 0.0)); }
+                            catch (Exception ignored) {}
+                        }
+                    }
+                    JSONObject mp = bo.optJSONObject("multiPayers");
+                    if (mp != null) {
+                        Iterator<String> keys = mp.keys();
+                        while (keys.hasNext()) {
+                            String k = keys.next();
+                            try { b.setMultiPayer(Integer.parseInt(k), mp.optDouble(k, 0.0)); }
                             catch (Exception ignored) {}
                         }
                     }

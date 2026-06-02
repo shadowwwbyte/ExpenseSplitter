@@ -31,6 +31,7 @@ public class DashboardFragment extends Fragment {
     static final int BLUE     = 0xFF458588;
     static final int ORANGE   = 0xFFD65D0E;
     static final int AQUA     = 0xFF689D6A;
+    static final int PURPLE   = 0xFFB16286;
     static final int BRIGHT_G = 0xFFB8BB26;
     static final int BRIGHT_Y = 0xFFFABD2F;
     static final int BRIGHT_R = 0xFFFB4934;
@@ -57,14 +58,19 @@ public class DashboardFragment extends Fragment {
         double totalExp = manager.getTotalExpenses();
         addSection("Bills (" + manager.getBills().size() + ")  Total: " + String.format("%.2f", totalExp), BLUE);
         for (Bill b : manager.getBills()) {
-            Person payer = manager.getPersonById(b.getPayerId());
-            addRow("\u2022 " + b.getTitle() + "  " + String.format("%.2f", b.getTotal())
-                + (payer != null ? "  [paid by " + payer.getName() + "]" : ""), FG);
+            String payerStr = b.isMultiPayer() ? "multiple contributors" : (manager.getPersonById(b.getPayerId()) != null ? manager.getPersonById(b.getPayerId()).getName() : "?");
+            addRow("\u2022 " + b.getTitle() + "  " + String.format("%.2f", b.getTotal()) + "  [paid by " + payerStr + "]", FG);
             if (!b.getDescription().isEmpty()) addRow("    " + b.getDescription(), FG2);
+            if (b.isMultiPayer()) {
+                for (Map.Entry<Integer, Double> e : b.getMultiPayers().entrySet()) {
+                    Person p = manager.getPersonById(e.getKey());
+                    addRow("    \u251C contributed: " + (p != null ? p.getName() : "?") + "  " + String.format("%.2f", e.getValue()), FG2);
+                }
+            }
             if (b.hasIndividualAmounts()) {
                 for (Map.Entry<Integer, Double> e : b.getIndividualAmounts().entrySet()) {
                     Person p = manager.getPersonById(e.getKey());
-                    addRow("    \u2514 " + (p != null ? p.getName() : "?") + ": " + String.format("%.2f", e.getValue()), FG2);
+                    addRow("    \u2514 " + (p != null ? p.getName() : "?") + " owes: " + String.format("%.2f", e.getValue()), FG2);
                 }
             }
         }
@@ -285,7 +291,6 @@ public class DashboardFragment extends Fragment {
             List<Bill> bills = manager.getBills();
             for (int bi = 0; bi < bills.size(); bi++) {
                 Bill b = bills.get(bi);
-                Person payer = manager.getPersonById(b.getPayerId());
 
                 ensureSpace(90);
                 // Bill card header
@@ -298,11 +303,28 @@ public class DashboardFragment extends Fragment {
                 curY += 32;
 
                 // Bill meta
-                if (!b.getDescription().isEmpty()) {
-                    drawRow("Description:  " + b.getDescription(), "", FG2, 8);
+                if (!b.getDescription().isEmpty()) drawRow("Description:  " + b.getDescription(), "", FG2, 8);
+                if (b.isMultiPayer()) {
+                    drawRow("Paid by:  Multiple contributors", "", FG, 8);
+                } else {
+                    Person payer = manager.getPersonById(b.getPayerId());
+                    drawRow("Paid by:  " + (payer != null ? payer.getName() : "Unknown"), "", FG, 8);
                 }
-                drawRow("Paid by:  " + (payer != null ? payer.getName() : "Unknown"), "", FG, 8);
                 drawRow("Split mode:  " + (b.hasIndividualAmounts() ? "Individual amounts" : "Split evenly among " + numPeople), "", FG2, 8);
+
+                // Multi-payer contributions table
+                if (b.isMultiPayer()) {
+                    drawSpacing(4);
+                    drawSubHeader("Contributions (who paid)", PURPLE);
+                    double contribSum = 0;
+                    for (Map.Entry<Integer, Double> e : b.getMultiPayers().entrySet()) {
+                        Person cp = manager.getPersonById(e.getKey());
+                        contribSum += e.getValue();
+                        drawRow((cp != null ? cp.getName() : "?"), String.format("%.2f", e.getValue()), FG, 16);
+                    }
+                    drawDivider(BG2);
+                    drawRowBold("Total contributed", String.format("%.2f", contribSum), BRIGHT_Y, 16);
+                }
 
                 // Individual breakdown table
                 if (b.hasIndividualAmounts()) {
@@ -481,13 +503,19 @@ public class DashboardFragment extends Fragment {
         items.add(new Object[]{"section", "Bills (" + manager.getBills().size() + ")  Total: " + String.format("%.2f", total), BLUE});
         items.add(new Object[]{"div", BLUE});
         for (Bill b : manager.getBills()) {
-            Person payer = manager.getPersonById(b.getPayerId());
-            items.add(new Object[]{"row", "\u2022 " + b.getTitle() + "  " + String.format("%.2f", b.getTotal()) + (payer != null ? "  [" + payer.getName() + "]" : ""), FG});
+            String payerStr = b.isMultiPayer() ? "multiple" : (manager.getPersonById(b.getPayerId()) != null ? manager.getPersonById(b.getPayerId()).getName() : "?");
+            items.add(new Object[]{"row", "\u2022 " + b.getTitle() + "  " + String.format("%.2f", b.getTotal()) + "  [" + payerStr + "]", FG});
             if (!b.getDescription().isEmpty()) items.add(new Object[]{"row", "    " + b.getDescription(), FG2});
+            if (b.isMultiPayer()) {
+                for (Map.Entry<Integer, Double> e : b.getMultiPayers().entrySet()) {
+                    Person p = manager.getPersonById(e.getKey());
+                    items.add(new Object[]{"row", "    \u251C contrib: " + (p != null ? p.getName() : "?") + "  " + String.format("%.2f", e.getValue()), FG2});
+                }
+            }
             if (b.hasIndividualAmounts()) {
                 for (Map.Entry<Integer, Double> e : b.getIndividualAmounts().entrySet()) {
                     Person p = manager.getPersonById(e.getKey());
-                    items.add(new Object[]{"row", "    \u2514 " + (p != null ? p.getName() : "?") + ": " + String.format("%.2f", e.getValue()), FG2});
+                    items.add(new Object[]{"row", "    \u2514 " + (p != null ? p.getName() : "?") + " owes: " + String.format("%.2f", e.getValue()), FG2});
                 }
             }
         }
