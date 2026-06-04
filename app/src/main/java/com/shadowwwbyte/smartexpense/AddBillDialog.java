@@ -222,6 +222,18 @@ public class AddBillDialog {
                     }
                 }
 
+                // --- Validate contribution vs individual mismatch ---
+                if (isMulti && mode == 1 && contribTotal > 0 && indivSum > 0) {
+                    double diff = Math.round(Math.abs(contribTotal - indivSum) * 100.0) / 100.0;
+                    if (diff >= 0.01) {
+                        String msg = String.format(
+                            "Mismatch: Contributions total (%.2f) \u2260 Individual expenses total (%.2f).\nDifference: %.2f. Please correct and try again.",
+                            contribTotal, indivSum, diff);
+                        Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }
+
                 // --- Determine total ---
                 double total;
                 if (isMulti) {
@@ -279,11 +291,62 @@ public class AddBillDialog {
         return et;
     }
 
+    /**
+     * Evaluates arithmetic expressions with +, -, *, /
+     * e.g. "25+55/3", "100*0.18/4+30", "50+30-10"
+     */
     private double eval(String s) {
-        s = s.trim();
-        String[] parts = s.split("\\+");
-        double sum = 0;
-        for (String p : parts) sum += Double.parseDouble(p.trim());
-        return sum;
+        return new ExprParser(s.trim()).parse();
+    }
+
+    private static class ExprParser {
+        private final String expr;
+        private int pos;
+
+        ExprParser(String expr) { this.expr = expr; this.pos = 0; }
+
+        double parse() {
+            double result = parseTerm();
+            while (pos < expr.length()) {
+                char op = expr.charAt(pos);
+                if (op == '+' || op == '-') {
+                    pos++;
+                    double t = parseTerm();
+                    result = (op == '+') ? result + t : result - t;
+                } else break;
+            }
+            return result;
+        }
+
+        private double parseTerm() {
+            double result = parseFactor();
+            while (pos < expr.length()) {
+                char op = expr.charAt(pos);
+                if (op == '*' || op == '/') {
+                    pos++;
+                    double f = parseFactor();
+                    result = (op == '*') ? result * f : result / f;
+                } else break;
+            }
+            return result;
+        }
+
+        private double parseFactor() {
+            skipSpaces();
+            if (pos < expr.length() && expr.charAt(pos) == '(') {
+                pos++; // consume '('
+                double val = parse();
+                if (pos < expr.length() && expr.charAt(pos) == ')') pos++;
+                return val;
+            }
+            int start = pos;
+            if (pos < expr.length() && expr.charAt(pos) == '-') pos++; // unary minus
+            while (pos < expr.length() && (Character.isDigit(expr.charAt(pos)) || expr.charAt(pos) == '.')) pos++;
+            return Double.parseDouble(expr.substring(start, pos));
+        }
+
+        private void skipSpaces() {
+            while (pos < expr.length() && expr.charAt(pos) == ' ') pos++;
+        }
     }
 }

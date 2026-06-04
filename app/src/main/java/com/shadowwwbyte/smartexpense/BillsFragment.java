@@ -47,12 +47,21 @@ public class BillsFragment extends Fragment {
             if (b == null) { Toast.makeText(getContext(), "Select a bill", Toast.LENGTH_SHORT).show(); return; }
             StringBuilder sb = new StringBuilder();
             sb.append("Title: ").append(b.getTitle()).append("\n");
-            sb.append("Description: ").append(b.getDescription()).append("\n");
+            sb.append("Description: ").append(b.getDescription().isEmpty() ? "-" : b.getDescription()).append("\n");
             sb.append("Total: ").append(String.format("%.2f", b.getTotal())).append("\n");
-            Person payer = manager.getPersonById(b.getPayerId());
-            sb.append("Payer: ").append(payer != null ? payer.getName() : "Unknown").append("\n");
+            if (b.isMultiPayer()) {
+                sb.append("Payer: Multiple contributors\n");
+                sb.append("\nContributions:\n");
+                for (Map.Entry<Integer, Double> e2 : b.getMultiPayers().entrySet()) {
+                    Person cp = manager.getPersonById(e2.getKey());
+                    sb.append(" - ").append(cp != null ? cp.getName() : "?").append(": ").append(String.format("%.2f", e2.getValue())).append("\n");
+                }
+            } else {
+                Person payer = manager.getPersonById(b.getPayerId());
+                sb.append("Payer: ").append(payer != null ? payer.getName() : "Unknown").append("\n");
+            }
             if (b.hasIndividualAmounts()) {
-                sb.append("\nIndividual amounts:\n");
+                sb.append("\nIndividual expenses:\n");
                 for (Map.Entry<Integer, Double> e2 : b.getIndividualAmounts().entrySet()) {
                     Person p = manager.getPersonById(e2.getKey());
                     sb.append(" - ").append(p != null ? p.getName() : ("id:" + e2.getKey())).append(": ").append(String.format("%.2f", e2.getValue())).append("\n");

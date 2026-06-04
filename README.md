@@ -8,6 +8,13 @@ among multiple users
 - To compute optimized balances and reduce the number
 of transactions between users
 
+### How to install
+
+(Stable release without multipayer feature)[https://github.com/shadowwwbyte/ExpenseSplitter/releases/tag/v2.0-a1d0cdc]
+
+
+(Stable release with multipayer feature)[]
+
 ### How to compile
 
 ```sh

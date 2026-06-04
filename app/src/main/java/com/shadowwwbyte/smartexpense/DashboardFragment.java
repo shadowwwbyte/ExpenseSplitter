@@ -64,13 +64,13 @@ public class DashboardFragment extends Fragment {
             if (b.isMultiPayer()) {
                 for (Map.Entry<Integer, Double> e : b.getMultiPayers().entrySet()) {
                     Person p = manager.getPersonById(e.getKey());
-                    addRow("    \u251C contributed: " + (p != null ? p.getName() : "?") + "  " + String.format("%.2f", e.getValue()), FG2);
+                    addRowBold("    \u251C Contributor: " + (p != null ? p.getName() : "?") + "  " + String.format("%.2f", e.getValue()), FG);
                 }
             }
             if (b.hasIndividualAmounts()) {
                 for (Map.Entry<Integer, Double> e : b.getIndividualAmounts().entrySet()) {
                     Person p = manager.getPersonById(e.getKey());
-                    addRow("    \u2514 " + (p != null ? p.getName() : "?") + " owes: " + String.format("%.2f", e.getValue()), FG2);
+                    addRow("    \u2514 " + (p != null ? p.getName() : "?") + " expense: " + String.format("%.2f", e.getValue()), FG2);
                 }
             }
         }
@@ -105,6 +105,13 @@ public class DashboardFragment extends Fragment {
     private void addRow(String text, int color) {
         TextView tv = new TextView(getContext());
         tv.setText(text); tv.setTextColor(color); tv.setTextSize(13.5f); tv.setPadding(8, 4, 0, 4);
+        dashContent.addView(tv);
+    }
+
+    private void addRowBold(String text, int color) {
+        TextView tv = new TextView(getContext());
+        tv.setText(text); tv.setTextColor(color); tv.setTextSize(13.5f);
+        tv.setTypeface(Typeface.DEFAULT_BOLD); tv.setPadding(8, 4, 0, 4);
         dashContent.addView(tv);
     }
 
@@ -329,12 +336,12 @@ public class DashboardFragment extends Fragment {
                 // Individual breakdown table
                 if (b.hasIndividualAmounts()) {
                     drawSpacing(4);
-                    drawSubHeader("Individual Breakdown", BLUE);
+                    drawSubHeader("Individual Expense Breakdown", BLUE);
                     double checksum = 0;
                     for (Map.Entry<Integer, Double> e : b.getIndividualAmounts().entrySet()) {
                         Person ip = manager.getPersonById(e.getKey());
                         checksum += e.getValue();
-                        drawRow((ip != null ? ip.getName() : "?"), String.format("%.2f", e.getValue()), FG, 16);
+                        drawRow((ip != null ? ip.getName() : "?") + " expense", String.format("%.2f", e.getValue()), FG, 16);
                     }
                     drawDivider(BG2);
                     drawRowBold("Total", String.format("%.2f", checksum), BRIGHT_Y, 16);
@@ -363,12 +370,19 @@ public class DashboardFragment extends Fragment {
             for (Person p : manager.getPeople()) {
                 double paid = 0, owes = 0;
                 for (Bill b : bills) {
-                    if (b.getPayerId() == p.getId()) paid += b.getTotal();
+                    // Single payer
+                    if (!b.isMultiPayer() && b.getPayerId() == p.getId()) paid += b.getTotal();
+                    // Multi-payer: add this person's contribution
+                    if (b.isMultiPayer()) {
+                        Double contrib = b.getMultiPayers().get(p.getId());
+                        if (contrib != null) paid += contrib;
+                    }
+                    // What they owe/spent
                     if (b.hasIndividualAmounts()) {
                         Double amt = b.getIndividualAmounts().get(p.getId());
                         if (amt != null) owes += amt;
                     } else {
-                        if (!bills.isEmpty()) owes += b.getTotal() / numPeople;
+                        owes += b.getTotal() / numPeople;
                     }
                 }
                 double balance = bal.getOrDefault(p.getId(), 0.0);
@@ -446,6 +460,8 @@ public class DashboardFragment extends Fragment {
         Paint divPaint = new Paint(); divPaint.setStyle(Paint.Style.FILL);
         Paint titlePaint = new Paint(); titlePaint.setTextSize(44f); titlePaint.setTypeface(Typeface.DEFAULT_BOLD); titlePaint.setColor(BRIGHT_Y); titlePaint.setAntiAlias(true);
 
+        Paint rowBoldPaint = new Paint(); rowBoldPaint.setTextSize(28f); rowBoldPaint.setTypeface(Typeface.DEFAULT_BOLD); rowBoldPaint.setAntiAlias(true);
+
         List<Object[]> items = buildRenderItems();
         int totalH = 60;
         for (Object[] item : items) {
@@ -476,6 +492,10 @@ public class DashboardFragment extends Fragment {
                 divPaint.setColor((Integer) item[1]);
                 canvas.drawRect(32, y, width - 32, y + 3, divPaint);
                 y += 10;
+            } else if ("rowbold".equals(type)) {
+                rowBoldPaint.setColor((Integer) item[2]);
+                canvas.drawText((String) item[1], 44, y + 26, rowBoldPaint);
+                y += 34;
             } else {
                 rowPaint.setColor((Integer) item[2]);
                 canvas.drawText((String) item[1], 44, y + 26, rowPaint);
@@ -509,13 +529,13 @@ public class DashboardFragment extends Fragment {
             if (b.isMultiPayer()) {
                 for (Map.Entry<Integer, Double> e : b.getMultiPayers().entrySet()) {
                     Person p = manager.getPersonById(e.getKey());
-                    items.add(new Object[]{"row", "    \u251C contrib: " + (p != null ? p.getName() : "?") + "  " + String.format("%.2f", e.getValue()), FG2});
+                    items.add(new Object[]{"rowbold", "    \u251C Contributor: " + (p != null ? p.getName() : "?") + "  " + String.format("%.2f", e.getValue()), FG});
                 }
             }
             if (b.hasIndividualAmounts()) {
                 for (Map.Entry<Integer, Double> e : b.getIndividualAmounts().entrySet()) {
                     Person p = manager.getPersonById(e.getKey());
-                    items.add(new Object[]{"row", "    \u2514 " + (p != null ? p.getName() : "?") + " owes: " + String.format("%.2f", e.getValue()), FG2});
+                    items.add(new Object[]{"row", "    \u2514 " + (p != null ? p.getName() : "?") + " expense: " + String.format("%.2f", e.getValue()), FG2});
                 }
             }
         }
