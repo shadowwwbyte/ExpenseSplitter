@@ -10,10 +10,9 @@ of transactions between users
 
 ### How to install
 
-(Stable release without multipayer feature)[https://github.com/shadowwwbyte/ExpenseSplitter/releases/tag/v2.0-a1d0cdc]
+[Download the .apk from here](https://github.com/shadowwwbyte/ExpenseSplitter/releases)
 
-
-(Stable release with multipayer feature)[]
+[Recommended Stable Release](https://github.com/shadowwwbyte/ExpenseSplitter/releases/tag/v2.0-3055b49)
 
 ### How to compile
 
